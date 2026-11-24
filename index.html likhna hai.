@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TECHHUB - Technology Store</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:#f5f7fb;color:#172033}
+header{background:#101b35;color:white;padding:20px 7%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px}
+.logo{font-size:28px;font-weight:bold;color:#50c8ff}
+nav a{color:white;text-decoration:none;margin:0 10px}
+.hero{background:linear-gradient(120deg,#101b35,#145b91);color:white;padding:65px 7%;text-align:center}
+.hero h1{font-size:44px;margin-bottom:15px}
+.hero p{font-size:18px;margin-bottom:25px}
+.btn{background:#43c4ff;color:#10203c;padding:12px 22px;border:0;border-radius:6px;font-weight:bold;cursor:pointer;text-decoration:none;display:inline-block}
+.search{display:block;width:86%;max-width:600px;margin:25px auto;padding:15px;border:1px solid #ddd;border-radius:8px;font-size:16px}
+h2{text-align:center;margin:35px 0 20px}
+.categories,.products{padding:0 7%;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:18px}
+.category,.product{background:white;padding:20px;border-radius:12px;text-align:center;box-shadow:0 3px 12px #0000000c}
+.category{font-weight:bold}
+.category span{font-size:35px;display:block;margin-bottom:10px}
+.product img{width:100%;height:155px;object-fit:contain;margin-bottom:12px}
+.product h3{margin:8px 0}
+.price{color:#087cbb;font-weight:bold;font-size:19px;margin:12px}
+.product button{width:100%}
+.cart{margin:35px 7%;padding:22px;background:white;border-radius:12px}
+footer{margin-top:45px;background:#101b35;color:white;text-align:center;padding:30px}
+@media(max-width:600px){.hero h1{font-size:32px}header{justify-content:center}nav{text-align:center}}
+</style>
+</head>
+<body>
+
+<header>
+<div class="logo">TECHHUB</div>
+<nav>
+<a href="#">Home</a>
+<a href="#categories">Categories</a>
+<a href="#products">Products</a>
+<a href="#cart">Cart 🛒</a>
+</nav>
+</header>
+
+<section class="hero">
+<h1>WELCOME TO TECHHUB</h1>
+<p>Your World of Technology</p>
+<p>Mobiles, Laptops, Gaming & Accessories</p>
+<a href="#products" class="btn">SHOP NOW</a>
+</section>
+
+<input class="search" id="search" placeholder="Search your favourite products..." oninput="searchProducts()">
+
+<h2 id="categories">SHOP BY CATEGORY</h2>
+<section class="categories">
+<div class="category"><span>📱</span>Mobile Phones</div>
+<div class="category"><span>💻</span>Laptops</div>
+<div class="category"><span>🎧</span>Headphones</div>
+<div class="category"><span>⌚</span>Smart Watches</div>
+<div class="category"><span>🎮</span>Gaming</div>
+<div class="category"><span>🖥️</span>Computer Parts</div>
+</section>
+
+<h2 id="products">FEATURED PRODUCTS</h2>
+<section class="products" id="productList"></section>
+
+<section class="cart" id="cart">
+<h2>YOUR SHOPPING CART 🛒</h2>
+<div id="cartItems">Your cart is empty.</div>
+<h3 id="total">Total: Rs. 0</h3>
+<br>
+<button class="btn" onclick="checkout()">ORDER ON WHATSAPP</button>
+</section>
+
+<footer>
+<h2>TECHHUB</h2>
+<p>Your World of Technology</p>
+<p>Contact us for orders and information.</p>
+<p>© 2026 TECHHUB. All Rights Reserved.</p>
+</footer>
+
+<script>
+const products=[
+{name:"Smartphone",price:45000,icon:"📱"},
+{name:"Laptop",price:95000,icon:"💻"},
+{name:"Wireless Earbuds",price:4500,icon:"🎧"},
+{name:"Smart Watch",price:6500,icon:"⌚"},
+{name:"Gaming Controller",price:5500,icon:"🎮"},
+{name:"Computer Keyboard",price:3500,icon:"⌨️"}
+];
+
+let cart=[];
+
+function showProducts(items){
+document.getElementById("productList").innerHTML=items.map((p,i)=>`
+<div class="product">
+<div style="font-size:90px;padding:20px">${p.icon}</div>
+<h3>${p.name}</h3>
+<div class="price">Rs. ${p.price.toLocaleString("en-PK")}</div>
+<button class="btn" onclick="addToCart('${p.name}')">ADD TO CART</button>
+</div>`).join("");
+}
+
+function searchProducts(){
+let q=document.getElementById("search").value.toLowerCase();
+showProducts(products.filter(p=>p.name.toLowerCase().includes(q)));
+}
+
+function addToCart(name){
+cart.push(products.find(p=>p.name===name));
+updateCart();
+}
+
+function updateCart(){
+document.getElementById("cartItems").innerHTML=cart.length?
+cart.map((p,i)=>`${p.name} - Rs. ${p.price.toLocaleString("en-PK")} <button onclick="removeItem(${i})">Remove</button>`).join("<br><br>"):"Your cart is empty.";
+let total=cart.reduce((sum,p)=>sum+p.price,0);
+document.getElementById("total").innerText="Total: Rs. "+total.toLocaleString("en-PK");
+}
+
+function removeItem(i){
+cart.splice(i,1);
+updateCart();
+}
+
+function checkout(){
+if(!cart.length){alert("Your cart is empty!");return;}
+let message="Assalam o Alaikum! I want to order from TECHHUB:\n";
+cart.forEach(p=>message+=p.name+" - Rs. "+p.price+"\n");
+let total=cart.reduce((s,p)=>s+p.price,0);
+message+="Total: Rs. "+total;
+let phone="923001234567";
+window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(message),"_blank");
+}
+
+showProducts(products);
+</script>
+
+</body>
+</html>
